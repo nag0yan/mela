@@ -16,16 +16,12 @@ services:
       - "8080:8080"
     depends_on:
       - "database"
-    links:
-      - "database"
   ranking-api:
     image: ranking-api
     container_name: ranking-api
     ports:
       - "8081:8080"
     depends_on:
-      - "database"
-    links:
       - "database"
   webapp:
     image: mela-next
@@ -35,9 +31,6 @@ services:
     depends_on:
       - "point-api"
       - "ranking-api"
-    links:
-      - "point-api"
-      - "ranking-api"
   webserver:
     image: webserver
     container_name: webserver
@@ -45,5 +38,4 @@ services:
       - "80:80"
     depends_on:
       - "webapp"
-    links:
-      - "webapp"
+    restart: always
