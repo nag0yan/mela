@@ -4,30 +4,22 @@ services:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
     image: "amazon/dynamodb-local:2.2.1"
     container_name: dynamodb-local
-    ports:
-      - "8000:8000"
     volumes:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
   point-api:
     image: point-api
     container_name: point-api
-    ports:
-      - "8080:8080"
     depends_on:
       - "database"
   ranking-api:
     image: ranking-api
     container_name: ranking-api
-    ports:
-      - "8081:8080"
     depends_on:
       - "database"
   webapp:
     image: mela-next
     container_name: mela-next
-    ports:
-      - "3000:3000"
     depends_on:
       - "point-api"
       - "ranking-api"
