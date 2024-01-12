@@ -4,6 +4,9 @@ tasks:
   dry-run:
     cmds:
       - docker compose -f docker-compose.yml -f docker-compose-dev.yml up --dry-run
+  build:
+    cmds:
+      - docker compose -f docker-compose.yml -f docker-compose-dev.yml build
   run:
     cmds:
       - docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d
