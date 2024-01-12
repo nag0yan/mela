@@ -1,23 +1,23 @@
 version: '3.8'
 services:
   point-api:
-    image: point-api
+    image: 894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/point-api
     container_name: point-api
     depends_on:
       - "database"
   ranking-api:
-    image: ranking-api
+    image: 894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/ranking-api
     container_name: ranking-api
     depends_on:
       - "database"
   webapp:
-    image: mela-next
+    image: 894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/mela-next
     container_name: mela-next
     depends_on:
       - "point-api"
       - "ranking-api"
   webserver:
-    image: webserver
+    image: 894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/webserver
     container_name: webserver
     ports:
       - "80:80"
