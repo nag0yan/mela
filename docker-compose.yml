@@ -1,12 +1,5 @@
 version: '3.8'
 services:
-  database:
-    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-    image: "amazon/dynamodb-local:2.2.1"
-    container_name: dynamodb-local
-    volumes:
-      - "./docker/dynamodb:/home/dynamodblocal/data"
-    working_dir: /home/dynamodblocal
   point-api:
     image: point-api
     container_name: point-api

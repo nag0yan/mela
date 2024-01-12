@@ -1,0 +1,12 @@
+version: 3
+
+tasks:
+  dry-run:
+    cmds:
+      - docker compose -f docker-compose.yml -f docker-compose-dev.yml up --dry-run
+  run:
+    cmds:
+      - docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d
+  stop:
+    cmds:
+      - docker compose -f docker-compose.yml -f docker-compose-dev.yml down
