@@ -1,0 +1,71 @@
+{
+  "containerDefinitions": [
+    {
+      "cpu": 1024,
+      "essential": true,
+      "image": "894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/webserver",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/nginx",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "memory": 2048,
+      "memoryReservation": 1024,
+      "name": "nginx-container",
+      "portMappings": [
+        {
+          "appProtocol": "http",
+          "containerPort": 80,
+          "hostPort": 80,
+          "name": "webserver"
+        }
+      ],
+      "linuxParameters": {
+        "initProcessEnabled": true
+      }
+    },
+    {
+      "command": [
+        "--config=/etc/ecs/ecs-cloudwatch.yaml"
+      ],
+      "cpu": 0,
+      "essential": true,
+      "image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.36.0",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/ecs-aws-otel-sidecar-collector",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "name": "aws-otel-collector"
+    }
+  ],
+  "cpu": "1024",
+  "taskRoleArn": "arn:aws:iam::894393074014:role/ecs-exec-task-role",
+  "executionRoleArn": "arn:aws:iam::894393074014:role/ecsTaskExecutionRole",
+  "family": "nginx",
+  "ipcMode": "",
+  "memory": "3072",
+  "networkMode": "awsvpc",
+  "pidMode": "",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "tags": [
+    {
+      "key": "Project",
+      "value": "mela"
+    }
+  ]
+}
