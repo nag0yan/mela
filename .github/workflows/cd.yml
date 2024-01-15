@@ -1,9 +1,9 @@
 name: cd
 run-name: ${{ github.actor }} is deploying
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 permissions:
   id-token: write
@@ -26,6 +26,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        # TODO: skip non-changed path
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
