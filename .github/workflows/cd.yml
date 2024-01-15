@@ -39,8 +39,8 @@ jobs:
       - name: build and push
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.array.dockerBuildContext }}
+          context: ${{ matrix.array.number.dockerBuildContext }}
           platforms: linux/amd64
           push: true
           tags:
-            ${{ env.ECR_REGISTRY }}/${{ matrix.array.ecrRepository }}:latest
+            ${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
