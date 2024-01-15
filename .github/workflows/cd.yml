@@ -17,16 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dockerBuildContext:
-        - "./api/point-api/"
-        - "./api/ranking-api/"
-        - "./web/mela-next/"
-        - "./web/server/"
-        ecrRepository:
-        - "mela/point-api"
-        - "mela/ranking-api"
-        - "mela/mela-next"
-        - "mela/webserver"
+        array: [
+          number: {dockerBuildContext: "./api/point-api/", ecrRepository: "mela/point-api"},
+          number: {dockerBuildContext: "./api/ranking-api/", ecrRepository: "mela/ranking-api"},
+          number: {dockerBuildContext: "./web/mela-next/", ecrRepository: "mela/mela-next"},
+          number: {dockerBuildContext: "./web/server/", ecrRepository: "mela/webserver"}
+        ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,8 +39,8 @@ jobs:
       - name: build and push
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.dockerBuildContext }}
+          context: ${{ matrix.array.dockerBuildContext }}
           platforms: linux/amd64
           push: true
           tags:
-            ${{ env.ECR_REGISTRY }}/${{ matrix.ecrRepository }}:latest }}
+            ${{ env.ECR_REGISTRY }}/${{ matrix.array.ecrRepository }}:latest }}
