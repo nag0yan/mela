@@ -1,0 +1,50 @@
+name: cd
+run-name: ${{ github.actor }} is deploying
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+env:
+  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerBuildContext:
+        - "./api/point-api/"
+        - "./api/ranking-api/"
+        - "./web/mela-next/"
+        - "./web/server/"
+        ecrRepository:
+        - "mela/point-api"
+        - "mela/ranking-api"
+        - "mela/mela-next"
+        - "mela/webserver"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.dockerBuildContext }}
+          platforms: linux/amd64
+          push: true
+          tags:
+            ${{ env.ECR_REGISTRY }}/${{ matrix.ecrRepository }}:latest }}
