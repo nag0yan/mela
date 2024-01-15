@@ -43,4 +43,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags:
-            ${{ env.ECR_REGISTRY }}/${{ matrix.array.ecrRepository }}:latest }}
+            ${{ env.ECR_REGISTRY }}/${{ matrix.array.ecrRepository }}:latest
