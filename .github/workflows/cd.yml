@@ -60,6 +60,6 @@ jobs:
           platforms: linux/amd64
           push: true
           cache-from: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
-          cache-to: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest,mode=max
+          cache-to: type=inline,ref=${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
           provenance: false
           tags: ${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
