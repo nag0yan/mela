@@ -34,17 +34,20 @@ jobs:
             path:
               - ${{ matrix.array.number.dockerBuildContext }}/**
       - name: Configure AWS Credentials
-        if: steps.changes.outputs == 'true'
+        if: steps.changes.outputs.path == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: us-east-1
       - name: Setup QEMU
+        if: steps.changes.outputs.path == 'true'
         uses: docker/setup-qemu-action@v3
       - name: Login to ECR
+        if: steps.changes.outputs.path == 'true'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
       - name: build and push
+        if: steps.changes.outputs.path == 'true'
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.array.number.dockerBuildContext }}
