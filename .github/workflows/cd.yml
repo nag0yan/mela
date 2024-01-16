@@ -18,14 +18,11 @@ jobs:
     strategy:
       matrix:
         array: [
-          number: {dockerBuildContext: "./api/point-api", ecrRepository: "mela/point-api"},
-          number: {dockerBuildContext: "./api/ranking-api", ecrRepository: "mela/ranking-api"},
-          number: {dockerBuildContext: "./web/mela-next", ecrRepository: "mela/mela-next"},
-          number: {dockerBuildContext: "./web/server", ecrRepository: "mela/webserver"}
+          number: {dockerBuildContext: "./api/point-api/", ecrRepository: "mela/point-api"},
+          number: {dockerBuildContext: "./api/ranking-api/", ecrRepository: "mela/ranking-api"},
+          number: {dockerBuildContext: "./web/mela-next/", ecrRepository: "mela/mela-next"},
+          number: {dockerBuildContext: "./web/server/", ecrRepository: "mela/webserver"}
         ]
-    defaults:
-      run:
-        working-directory: ${{ matrix.array.number.dockerBuildContext }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,14 +40,8 @@ jobs:
       - name: build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ${{ matrix.array.number.dockerBuildContext }}
           platforms: linux/amd64
           push: true
           tags:
             ${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
-      # - name: deploy
-      #   uses: kayac/ecspresso@v2
-      #   with:
-      #     version: v2.3.1
-      # - run: |
-      #     ecspresso deploy
