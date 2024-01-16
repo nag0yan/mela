@@ -19,9 +19,10 @@
       "portMappings": [
         {
           "appProtocol": "http",
-          "containerPort": 3000,
-          "hostPort": 3000,
-          "name": "webapp"
+          "containerPort": 3030,
+          "hostPort": 3030,
+          "name": "webapp",
+          "protocol": "tcp"
         }
       ]
     },
