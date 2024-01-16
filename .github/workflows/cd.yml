@@ -59,7 +59,7 @@ jobs:
           context: ${{ matrix.array.number.dockerBuildContext }}
           platforms: linux/amd64
           push: true
-          cache-from: type=gha,scope=${{matrix.array.number.dockerBuildContext}}
-          cache-to: type=gha,scope=${{matrix.array.number.dockerBuildContext}},mode=max
+          cache-from: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
+          cache-to: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest,mode=max
           provenance: false
           tags: ${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
