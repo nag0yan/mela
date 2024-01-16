@@ -21,7 +21,8 @@
           "appProtocol": "http",
           "containerPort": 8080,
           "hostPort": 8080,
-          "name": "point-api"
+          "name": "point-api",
+          "protocol": "tcp"
         }
       ]
     },
