@@ -44,5 +44,6 @@ jobs:
           push: true
           cache-from: type=gha,src=/tmp/.buildx-cache
           cache-to: type=gha,dest=/tmp/.buildx-cache,mode=max
+          provenance: false
           tags:
             ${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
