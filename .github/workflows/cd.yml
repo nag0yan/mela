@@ -18,10 +18,10 @@ jobs:
     strategy:
       matrix:
         array: [
-          number: {dockerBuildContext: "./api/point-api/", ecrRepository: "mela/point-api"},
-          number: {dockerBuildContext: "./api/ranking-api/", ecrRepository: "mela/ranking-api"},
-          number: {dockerBuildContext: "./web/mela-next/", ecrRepository: "mela/mela-next"},
-          number: {dockerBuildContext: "./web/server/", ecrRepository: "mela/webserver"}
+          number: {dockerBuildContext: "./api/point-api", ecrRepository: "mela/point-api"},
+          number: {dockerBuildContext: "./api/ranking-api", ecrRepository: "mela/ranking-api"},
+          number: {dockerBuildContext: "./web/mela-next", ecrRepository: "mela/mela-next"},
+          number: {dockerBuildContext: "./web/server", ecrRepository: "mela/webserver"}
         ]
     steps:
       - name: Checkout
