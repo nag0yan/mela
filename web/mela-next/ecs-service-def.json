@@ -19,7 +19,7 @@
   },
   "desiredCount": 1,
   "enableECSManagedTags": true,
-  "enableExecuteCommand": false,
+  "enableExecuteCommand": true,
   "launchType": "",
   "networkConfiguration": {
     "awsvpcConfiguration": {
@@ -38,5 +38,30 @@
   "platformFamily": "Linux",
   "platformVersion": "LATEST",
   "propagateTags": "TASK_DEFINITION",
-  "schedulingStrategy": "REPLICA"
+  "schedulingStrategy": "REPLICA",
+  "serviceConnectConfiguration": {
+    "enabled": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-create-group": "true",
+        "awslogs-group": "/ecs/webapp",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "namespace": "mela",
+    "services": [
+      {
+        "clientAliases": [
+          {
+            "dnsName": "webapp",
+            "port": 3000
+          }
+        ],
+        "discoveryName": "webapp",
+        "portName": "webapp"
+      }
+    ]
+  }
 }

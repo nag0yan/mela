@@ -19,8 +19,8 @@
       "portMappings": [
         {
           "appProtocol": "http",
-          "containerPort": 3030,
-          "hostPort": 3030,
+          "containerPort": 3000,
+          "hostPort": 3000,
           "name": "webapp",
           "protocol": "tcp"
         }
@@ -46,6 +46,7 @@
     }
   ],
   "cpu": "1024",
+  "taskRoleArn": "arn:aws:iam::894393074014:role/ecs-exec-task-role",
   "executionRoleArn": "arn:aws:iam::894393074014:role/ecsTaskExecutionRole",
   "family": "mela-next",
   "ipcMode": "",
