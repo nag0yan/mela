@@ -47,7 +47,7 @@ jobs:
           fetch-depth: 2
       - name: Diff check for each directory
         id: diff-count
-        run: git diff HEAD~ --name-only --relative=${{matrix.array.number.dockerBuildContext}} | wc -l
+        run: echo `diff-count=git diff HEAD~ --name-only --relative=${{matrix.array.number.dockerBuildContext}} | wc -l` >> $GITHUB_OUTPUT
       - name: Configure AWS Credentials
         if: ${{ steps.diff-count.outputs.diff-count != 0 }}
         uses: aws-actions/configure-aws-credentials@v4
