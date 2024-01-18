@@ -81,4 +81,4 @@ jobs:
         if: ${{ steps.diff-count.outputs.diff-count != 0 }}
         run: |
           ecspresso verify --config ${{ matrix.array.number.dockerBuildContext }}/ecspresso.yml
-          ecspresso deploy --config ${{ matrix.array.number.dockerBuildContext }}/ecspresso.yml
+          ecspresso deploy --config ${{ matrix.array.number.dockerBuildContext }}/ecspresso.yml --timeout 15m
