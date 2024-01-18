@@ -72,3 +72,12 @@ jobs:
           cache-to: type=inline,ref=${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
           provenance: false
           tags: ${{ env.ECR_REGISTRY }}/${{ matrix.array.number.ecrRepository }}:latest
+      - name: install ecspresso
+        if: ${{ steps.diff-count.outputs.diff-count != 0 }}
+        uses: kayac/ecspresso@v2
+        with:
+          version: v2.3.1
+      - name: deploy
+        if: ${{ steps.diff-count.outputs.diff-count != 0 }}
+        run: |
+          ecspresso deploy --config ${{ matrix.array.number.dockerBuildContext }}/ecspresso.yml
