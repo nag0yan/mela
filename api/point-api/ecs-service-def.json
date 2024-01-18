@@ -36,7 +36,7 @@
     }
   },
   "platformFamily": "Linux",
-  "platformVersion": "LATEST",
+  "platformVersion": "1.4.0",
   "propagateTags": "TASK_DEFINITION",
   "schedulingStrategy": "REPLICA",
   "serviceConnectConfiguration": {
@@ -63,5 +63,11 @@
         "portName": "point-api"
       }
     ]
-  }
+  },
+  "tags": [
+    {
+      "key": "Project",
+      "value": "mela"
+    }
+  ]
 }
