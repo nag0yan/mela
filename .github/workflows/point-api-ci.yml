@@ -5,6 +5,7 @@ on:
       - develop
     paths:
       - "api/point-api/**"
+      - ".github/workflows/point-api-ci.yml"
   workflow_dispatch:
 permissions:
   id-token: write
@@ -34,8 +35,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.21.5
-          cache: true
+          go-version-file: api/point-api/go.mod
       - name: Run test
         run: |
           go test
