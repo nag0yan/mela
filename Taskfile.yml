@@ -15,7 +15,7 @@ tasks:
       - docker compose -f docker-compose.yml -f docker-compose-dev.yml down
   dynamo-up:
     cmds:
-      - docker run -d -p 8000:8000  --name dynamodb amazon/dynamodb-local
+      - docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d database
   dynamo-down:
     cmds:
-      - docker stop dynamodb
+      - docker compose -f docker-compose.yml -f docker-compose-dev.yml down database
