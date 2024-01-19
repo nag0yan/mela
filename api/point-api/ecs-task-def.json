@@ -27,7 +27,7 @@
       ],
       "environment": [
         {
-          "name": "DATABASE_URL",
+          "name": "DATABASE_ENDPOINT",
           "value": "https://dynamodb.us-east-1.amazonaws.com"
         }
       ]
