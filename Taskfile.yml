@@ -13,9 +13,9 @@ tasks:
   stop:
     cmds:
       - docker compose -f docker-compose.yml -f docker-compose-dev.yml down
-  dynamo-up:
+  dynamodb-up:
     cmds:
-      - docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d database
-  dynamo-down:
+      - docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d dynamodb-local dynamo-admin
+  dynamodb-down:
     cmds:
-      - docker compose -f docker-compose.yml -f docker-compose-dev.yml down database
+      - docker compose -f docker-compose.yml -f docker-compose-dev.yml down dynamodb-local dynamo-admin

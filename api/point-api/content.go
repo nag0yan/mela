@@ -7,7 +7,7 @@ import (
 )
 
 type Content struct {
-	Id    string `dynamo:"id"`
+	Id    string `dynamo:"id,hash"`
 	Total int    `dynamo:"total"`
 }
 

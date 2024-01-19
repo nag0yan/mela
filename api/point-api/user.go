@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	Id    string `dynamo:"id"`
+	Id    string `dynamo:"id,hash"`
 	Point int    `dynamo:"point"`
 }
 

@@ -7,9 +7,9 @@ import (
 )
 
 type Spending struct {
-	ContentId string    `dynamo:"content_id" json:"content_id" binding:"required"`
+	ContentId string    `dynamo:"content_id,hash" json:"content_id" binding:"required"`
 	Point     int       `dynamo:"point" json:"point" binding:"required"`
-	UserId    string    `dynamo:"user_id" json:"user_id" binding:"required"`
+	UserId    string    `dynamo:"user_id,range" json:"user_id" binding:"required"`
 	CreatedAt time.Time `dynamo:"created_at"`
 }
 

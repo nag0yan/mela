@@ -1,7 +1,7 @@
 on:
   push:
-    brancheds:
-      main
+    branches:
+      - main
     path:
       - "api/point-api/**"
 jobs:
@@ -13,10 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Go
-        uses: actions/setupg-go@v4
+        uses: actions/setup-go@v4
         with:
           go-version: 1.21.5
       - name: Run test
         run: |
           go test
+    services:
+      dynamodb-local:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - 8000:8000
     
