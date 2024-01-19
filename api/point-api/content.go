@@ -53,3 +53,14 @@ func (content *Content) update() error {
 	}
 	return nil
 }
+
+func (content *Content) getSpendings() []Spending {
+	db := getDB()
+	table := db.Table("spending")
+	var spendings []Spending
+	err := table.Scan().Filter("content_id = ?", content.Id).All(&spendings)
+	if err != nil {
+		return nil
+	}
+	return spendings
+}

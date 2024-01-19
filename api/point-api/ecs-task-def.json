@@ -24,6 +24,12 @@
           "name": "point-api",
           "protocol": "tcp"
         }
+      ],
+      "environment": [
+        {
+          "name": "DATABASE_URL",
+          "value": "https://dynamodb.us-east-1.amazonaws.com"
+        }
       ]
     },
     {
@@ -46,6 +52,7 @@
     }
   ],
   "cpu": "1024",
+  "taskRoleArn": "arn:aws:iam::894393074014:role/point-api-task-role",
   "executionRoleArn": "arn:aws:iam::894393074014:role/ecsTaskExecutionRole",
   "family": "point-api",
   "ipcMode": "",

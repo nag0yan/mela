@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -45,7 +46,7 @@ func main() {
 			"message": "ok",
 		})
 	})
-	
+
 	// curl -X GET localhost:8080/user/user1
 	r.GET("/user/:id", func(c *gin.Context) {
 		id := c.Param("id")
@@ -61,12 +62,26 @@ func main() {
 			"user": user,
 		})
 	})
+	// curl -X GET localhost:8080/content/test/spendings
+	r.GET("/content/:id/spendings", func(c *gin.Context) {
+		id := c.Param("id")
+		content, err := getContent(id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err,
+			})
+			log.Fatal(err)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"spendings": content.getSpendings(),
+		})
+	})
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
 func getDB() *dynamo.DB {
 	sess := session.Must(session.NewSession())
-	// db := dynamo.New(sess, &aws.Config{Region: aws.String("us-east-1")})
-	db := dynamo.New(sess, &aws.Config{Region: aws.String("us-east-1"), Endpoint: aws.String("http://localhost:8000")})
+	db := dynamo.New(sess, &aws.Config{Region: aws.String("us-east-1"), Endpoint: aws.String(os.Getenv("DATABASE_ENDPOINT"))})
 	return db
 }
