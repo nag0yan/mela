@@ -31,7 +31,7 @@ func main() {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": err,
 			})
-			log.Fatal(err)
+			log.Print(err)
 			return
 		}
 		err = user.spend(json.ContentId, json.Point)
@@ -39,7 +39,7 @@ func main() {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": err,
 			})
-			log.Fatal(err)
+			log.Print(err)
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
@@ -55,7 +55,7 @@ func main() {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": err,
 			})
-			log.Fatal(err)
+			log.Print(err)
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
@@ -70,7 +70,7 @@ func main() {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": err,
 			})
-			log.Fatal(err)
+			log.Print(err)
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
