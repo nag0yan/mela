@@ -1,5 +1,4 @@
 name: build-push
-run-name: ${{ github.actor }} is deploying
 on:
   push:
     branches:
