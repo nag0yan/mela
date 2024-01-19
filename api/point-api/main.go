@@ -18,7 +18,7 @@ func main() {
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "healthy",
+			"message": os.Getenv("DATABASE_ENDPOINT"),
 		})
 	})
 	// curl -X POST -H "Content-Type: application/json" -d '{"content_id":"test","point":100,"user_id":"user1"}' localhost:8080/spend
