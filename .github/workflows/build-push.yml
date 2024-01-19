@@ -1,4 +1,4 @@
-name: cd
+name: build-push
 run-name: ${{ github.actor }} is deploying
 on:
   push:
@@ -13,7 +13,7 @@ env:
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
 
 jobs:
-  build-deploy:
+  build-push:
     runs-on: ubuntu-latest
     strategy:
       matrix:
