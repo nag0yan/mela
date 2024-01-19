@@ -3,22 +3,30 @@ services:
   point-api:
     image: 894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/point-api
     container_name: point-api
+    build: api/point-api
+    ports:
+      - "8080:8080"
     depends_on:
       - "database"
   ranking-api:
     image: 894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/ranking-api
     container_name: ranking-api
+    build: api/ranking-api
+    ports:
+      - "8081:8080"
     depends_on:
       - "database"
   webapp:
     image: 894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/mela-next
     container_name: mela-next
+    build: web/mela-next
     depends_on:
       - "point-api"
       - "ranking-api"
   webserver:
     image: 894393074014.dkr.ecr.us-east-1.amazonaws.com/mela/webserver
     container_name: webserver
+    build: web/server
     ports:
       - "80:80"
     depends_on:
