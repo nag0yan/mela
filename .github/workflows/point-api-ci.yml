@@ -1,8 +1,6 @@
 name: point-api-ci
 on:
-  push:
-    branches:
-      - develop
+  pull_request:
     paths:
       - "api/point-api/**"
       - ".github/workflows/point-api-ci.yml"
