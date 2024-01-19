@@ -1,9 +1,10 @@
 on:
   push:
     branches:
-      - main
+      - develop
     path:
       - "api/point-api/**"
+  workflow_dispatch:
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -24,4 +25,3 @@ jobs:
         image: amazon/dynamodb-local:latest
         ports:
           - 8000:8000
-    
