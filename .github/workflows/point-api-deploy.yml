@@ -23,7 +23,7 @@ jobs:
       - name: Install ecspresso
         uses: kayac/ecspresso@v2
         with:
-          version: 2.3.1
+          version: v2.3.1
       - name: Deploy
         run: |
           ecspresso deploy
