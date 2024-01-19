@@ -5,9 +5,6 @@ import(
 )
 
 func TestMain(m *testing.M){
-	// setup
-	deleteAllTable()
-	createDefaultTable()
 	m.Run()
 }
 
