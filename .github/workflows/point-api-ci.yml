@@ -35,7 +35,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version-file: api/point-api/go.mod
+          cache-dependency-path: api/point-api/go.sum
       - name: Run test
         run: |
           go test
