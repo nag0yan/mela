@@ -10,7 +10,7 @@ type Spending struct {
 	ContentId string    `dynamo:"content_id,hash" json:"content_id" binding:"required"`
 	Point     int       `dynamo:"point" json:"point" binding:"required"`
 	UserId    string    `dynamo:"user_id,range" json:"user_id" binding:"required"`
-	CreatedAt time.Time `dynamo:"created_at"`
+	UpdatedAt time.Time `dynamo:"updated_at"`
 }
 
 func getSpending(content_id string, user_id string) (Spending, error) {
@@ -33,6 +33,7 @@ func createSpending(content_id string, user_id string) (Spending, error) {
 		ContentId: content_id,
 		UserId:    user_id,
 		Point:     0,
+		UpdatedAt: time.Now(),
 	}
 	err := table.Put(spending).Run()
 	if err != nil {
@@ -48,6 +49,7 @@ func (spending *Spending) incrementPoint(point int) error {
 
 func (spending *Spending) update() error {
 	db := getDB()
+	spending.UpdatedAt = time.Now()
 	table := db.Table("spending")
 	err := table.Put(spending).Run()
 	if err != nil {
