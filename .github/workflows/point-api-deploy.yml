@@ -1,10 +1,5 @@
 name: point-api-deploy
 on:
-  workflow_run:
-    workflows:
-      - build-push
-    branches:
-      - main
   workflow_dispatch:
 permissions:
   id-token: write
