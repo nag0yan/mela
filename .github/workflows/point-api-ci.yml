@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - develop
-    path:
+    paths:
       - "api/point-api/**"
   workflow_dispatch:
 jobs:
