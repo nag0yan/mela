@@ -39,6 +39,17 @@ func getContent(content_id string) (Content, error) {
 	return content, nil
 }
 
+func getContents() ([]Content, error) {
+	db := getDB()
+	table := db.Table("content")
+	var contents []Content
+	err := table.Scan().All(&contents)
+	if err != nil {
+		return nil, err
+	}
+	return contents, nil
+}
+
 func (content *Content) incrementTotal(point int) error {
 	content.Total += point
 	return content.update()

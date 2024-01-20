@@ -77,6 +77,20 @@ func main() {
 			"spendings": content.getSpendings(),
 		})
 	})
+	// curl -X GET localhost:8080/contents
+	r.GET("/contents", func(c *gin.Context) {
+		contents, err := getContents()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err,
+			})
+			log.Print(err)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"contents": contents,
+		})
+	})
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
