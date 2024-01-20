@@ -91,6 +91,21 @@ func main() {
 			"contents": contents,
 		})
 	})
+	// curl -X GET localhost:8080/tables
+	r.GET("/tables", func(c *gin.Context) {
+		db := getDB()
+		tables, err := db.ListTables().All()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err,
+			})
+			log.Print(err)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"tables": tables,
+		})
+	})
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
