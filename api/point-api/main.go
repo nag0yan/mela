@@ -25,25 +25,32 @@ func main() {
 			"message": os.Getenv("DYNAMO_ENDPOINT"),
 		})
 	})
-	// curl -X POST localhost:8080/content/test
-	r.POST("/content/:id", func(c *gin.Context) {
+	// curl -X GET localhost:8080/content/test
+	// If content does not exist, create new content
+	r.GET("/content/:id", func(c *gin.Context) {
 		contentId := c.Param("id")
-		var content Content
-		content.Id = contentId
-		content.Kind = "content"
-		content.Point = 0
-		err := dbClient.createContent(content)
-		if err != nil {
-			log.Print(err)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": err.Error(),
-			})
+		content, err := dbClient.getContent(contentId)
+		if err == nil {
+			c.JSON(http.StatusOK, content)
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Created content",
+		if err == ContentNotFoundError {
+			content, err = dbClient.createContent(contentId)
+			if err != nil {
+				log.Print(err)
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"message": "Failed to create content",
+				})
+			}
+			log.Printf("Create content: %v", content.Id)
+			c.JSON(http.StatusOK, content)
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed to get content",
 		})
 	})
+
 	// curl -X GET localhost:8080/contents
 	r.GET("/contents", func(c *gin.Context) {
 		contents, err := dbClient.getContents()
@@ -55,6 +62,7 @@ func main() {
 		}
 		c.JSON(http.StatusOK, contents)
 	})
+
 	// curl -X GET localhost:8080/contents/sorted
 	r.GET("/contents/sorted", func(c *gin.Context) {
 		contents, err := dbClient.getContentsSorted()
@@ -68,16 +76,29 @@ func main() {
 	})
 
 	// curl -X GET localhost:8080/user/user1
+	// If user does not exist, create new user
 	r.GET("/user/:id", func(c *gin.Context) {
 		userId := c.Param("id")
 		user, err := dbClient.getUser(userId)
-		if err != nil {
-			log.Print(err)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "Failed to get user",
-			})
+		if err == nil {
+			c.JSON(http.StatusOK, user)
+			return
 		}
-		c.JSON(http.StatusOK, user)
+		if err == UserNotFoundError {
+			user, err = dbClient.createUser(userId)
+			if err != nil {
+				log.Print(err)
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"message": "Failed to create user",
+				})
+			}
+			log.Printf("Create user: %v", user.Id)
+			c.JSON(http.StatusOK, user)
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed to get user",
+		})
 	})
 
 	// curl -X GET localhost:8080/content/test/spendings
