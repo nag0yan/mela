@@ -12,59 +12,77 @@ type Content struct {
 	Point int    `dynamo:"point" localIndex:"point-index,range"`
 }
 
-var ContentNotFoundError = errors.New("Content not found")
-
-// Create content
-func (client *DynamoClient) createContent(id string) (Content, error) {
-	table := client.db.Table("mela")
-	content := Content{
-		Kind:  "content",
-		Id:    id,
-		Point: 0,
-	}
-	err := table.Put(content).Run()
-	if err != nil {
-		return content, err
-	}
-	return content, nil
+type ContentRepository interface {
+	GetContent(id string) (Content, error)
+	GetContents() ([]Content, error)
+	GetContentsRanking() ([]Content, error)
+	CreateContent(id string) (Content, error)
+	UpdateContent(content Content) (Content, error)
 }
 
+type ContentRepositoryImpl struct {
+	client *DynamoClient
+}
+
+func NewContentRepository(client *DynamoClient) (ContentRepository, error) {
+	return &ContentRepositoryImpl{
+		client: client,
+	}, nil
+}
+
+var ContentNotFoundError = errors.New("Content not found")
+
 // Get content
-func (client *DynamoClient) getContent(id string) (Content, error) {
+func (repo *ContentRepositoryImpl) GetContent(id string) (Content, error) {
 	var content Content
-	table := client.db.Table("mela")
-	err := table.Get("kind", "content").Range("id", dynamo.Equal, id).One(&content)
-	if err != nil {
-		return content, ContentNotFoundError
+	err := repo.client.db.Table("point").Get("kind", "content").Range("id", dynamo.Equal, id).One(&content)
+	if err == dynamo.ErrNotFound {
+		return Content{}, ContentNotFoundError
+	} else if err != nil {
+		return Content{}, err
 	}
 	return content, nil
 }
 
 // Get contents
-func (client *DynamoClient) getContents() ([]Content, error) {
+func (repo *ContentRepositoryImpl) GetContents() ([]Content, error) {
 	var contents []Content
-	table := client.db.Table("mela")
-	err := table.Get("kind", "content").All(&contents)
+	err := repo.client.db.Table("point").Get("kind", "content").All(&contents)
 	if err != nil {
-		return nil, err
+		return []Content{}, err
 	}
 	return contents, nil
 }
 
-// Get contents sorted
-func (client *DynamoClient) getContentsSorted() ([]Content, error) {
+// Get contents ranking
+func (repo *ContentRepositoryImpl) GetContentsRanking() ([]Content, error) {
 	var contents []Content
-	table := client.db.Table("mela")
-	// get contents sorted by point with total-index
-	err := table.Get("kind", "content").Index("point-index").Order(dynamo.Descending).All(&contents)
+	err := repo.client.db.Table("point").Get("kind", "content").Index("point-index").Order(dynamo.Descending).All(&contents)
 	if err != nil {
-		return nil, err
+		return []Content{}, err
 	}
 	return contents, nil
 }
 
-// Put content
-func (client *DynamoClient) putContent(content Content) *dynamo.Put {
-	table := client.db.Table("content")
-	return table.Put(content)
+// Create content
+func (repo *ContentRepositoryImpl) CreateContent(id string) (Content, error) {
+	content := Content{
+		Kind:  "content",
+		Id:    id,
+		Point: 0,
+	}
+	err := repo.client.db.Table("point").Put(content).Run()
+	if err != nil {
+		return Content{}, err
+	}
+	return content, nil
+}
+
+// Update content
+func (repo *ContentRepositoryImpl) UpdateContent(content Content) (Content, error) {
+	err := repo.client.db.Table("point").Put(content).Run()
+	if err != nil {
+		return Content{}, err
+	}
+	return content, nil
 }

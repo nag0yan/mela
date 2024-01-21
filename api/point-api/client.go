@@ -2,24 +2,27 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
 )
 
-type Mela struct {
-	Kind      string `dynamo:"kind,hash"`
-	ID        string `dynamo:"id,range"`
-	Point     int    `dynamo:"point" localIndex:"point-index,range"`
-	SpendBy   string `dynamo:"user_id"`
-	SpendTo   string `dynamo:"content_id"`
-	CreatedAt string `dynamo:"created_at" localIndex:"created_at-index,range"`
+type Point struct {
+	Kind      string    `dynamo:"kind,hash"`
+	Id        string    `dynamo:"id,range"`
+	Point     int       `dynamo:"point" localIndex:"point-index,range"`
+	CreatedAt string    `dynamo:"created_at" localIndex:"created_at-index,range"`
+	UpdatedAt time.Time `dynamo:"updated_at" localIndex:"updated_at-index,range"`
 }
 
 type DynamoClient struct {
 	Session *session.Session
 	db      *dynamo.DB
+	UserRepo     UserRepository
+	ContentRepo  ContentRepository
+	SpendingRepo SpendingRepository
 }
 
 func (client *DynamoClient) getDB() error {
@@ -39,10 +42,3 @@ func (client *DynamoClient) getDB() error {
 	}
 	return nil
 }
-
-
-
-
-
-
-

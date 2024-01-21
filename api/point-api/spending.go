@@ -2,41 +2,70 @@ package main
 
 import (
 	"time"
-
-	"github.com/guregu/dynamo"
 )
 
+type SpendingAction struct {
+	ContentId string `json:"content_id"`
+	UserId    string `json:"user_id"`
+	Point     int    `json:"point"`
+}
 type Spending struct {
-	ContentId string    `dynamo:"content_id,hash" json:"content_id" binding:"required"`
-	Point     int       `dynamo:"point" json:"point" binding:"required"`
-	UserId    string    `dynamo:"user_id,range" json:"user_id" binding:"required"`
-	UpdatedAt time.Time `dynamo:"updated_at"`
+	Kind       string    `dynamo:"kind,hash"`
+	SpendingId string    `dynamo:"id,range"`
+	ContentId  string    `dynamo:"content_id"`
+	UserId     string    `dynamo:"user_id"`
+	Point      int       `dynamo:"point" localIndex:"point-index,range"`
+	CreatedAt  time.Time `dynamo:"created_at" localIndex:"created_at-index,range"`
 }
 
-// Get speinding
-func (client *DynamoClient) getSpending(content_id, user_id string) (Spending, error) {
-	var spending Spending
-	table := client.db.Table("spending")
-	err := table.Get("content_id", content_id).Range("user_id", dynamo.Equal, user_id).One(&spending)
+type SpendingRepository interface {
+	CreateSpending(contentId string, userId string, point int) (Spending, error)
+	GetSpendings(userId string) ([]Spending, error)
+	PutSpending(spending Spending) (Spending, error)
+}
+
+type SpendingRepositoryImpl struct {
+	client *DynamoClient
+}
+
+func NewSpendingRepository(client *DynamoClient) (SpendingRepository, error) {
+	return &SpendingRepositoryImpl{
+		client: client,
+	}, nil
+}
+
+// Create spending
+func (repo *SpendingRepositoryImpl) CreateSpending(contentId string, userId string, point int) (Spending, error) {
+	spending := Spending{
+		Kind:       "spending",
+		SpendingId: userId + "-" + contentId,
+		ContentId:  contentId,
+		UserId:     userId,
+		Point:      point,
+		CreatedAt:  time.Now(),
+	}
+	spending, err := repo.PutSpending(spending)
 	if err != nil {
-		return spending, err
+		return Spending{}, err
 	}
 	return spending, nil
 }
 
 // Get spendings
-func (client *DynamoClient) getSpendings(content_id string) ([]Spending, error) {
+func (repo *SpendingRepositoryImpl) GetSpendings(userId string) ([]Spending, error) {
 	var spendings []Spending
-	table := client.db.Table("spending")
-	err := table.Scan().Filter("content_id", dynamo.Equal, content_id).All(&spendings)
+	err := repo.client.db.Table("point").Scan().Filter("user_id = ?", userId).All(&spendings)
 	if err != nil {
-		return nil, err
+		return []Spending{}, err
 	}
 	return spendings, nil
 }
 
 // Put spending
-func (client *DynamoClient) putSpending(spending Spending) *dynamo.Put {
-	table := client.db.Table("spending")
-	return table.Put(spending)
+func (repo *SpendingRepositoryImpl) PutSpending(spending Spending) (Spending, error) {
+	err := repo.client.db.Table("point").Put(spending).Run()
+	if err != nil {
+		return Spending{}, err
+	}
+	return spending, nil
 }

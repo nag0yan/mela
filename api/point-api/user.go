@@ -12,47 +12,65 @@ type User struct {
 	Point int    `dynamo:"point"`
 }
 
+type UserRepository interface {
+	GetUser(id string) (User, error)
+	GetUsers() ([]User, error)
+	CreateUser(id string) (User, error)
+	UpdateUser(user User) (User, error)
+}
+type UserRepositoryImpl struct {
+	client *DynamoClient
+}
+
+func NewUserRepository(client *DynamoClient) (UserRepository, error) {
+	return &UserRepositoryImpl{
+		client: client,
+	}, nil
+}
+
 var UserNotFoundError = errors.New("User not found")
 
 // Get user
-func (client *DynamoClient) getUser(id string) (User, error) {
+func (repo *UserRepositoryImpl) GetUser(id string) (User, error) {
 	var user User
-	table := client.db.Table("mela")
-	err := table.Get("kind", "user").Range("id", dynamo.Equal, id).One(&user)
+	err := repo.client.db.Table("point").Get("kind", "user").Range("id", dynamo.Equal, id).One(&user)
 	if err == dynamo.ErrNotFound {
-		return user, UserNotFoundError
-	}
-	return user, nil
-}
-
-// Create user
-func (client *DynamoClient) createUser(id string) (User, error) {
-	table := client.db.Table("mela")
-	user := User{
-		Kind:  "user",
-		Id:    id,
-		Point: 0,
-	}
-	err := table.Put(user).Run()
-	if err != nil {
-		return user, err
+		return User{}, UserNotFoundError
+	} else if err != nil {
+		return User{}, err
 	}
 	return user, nil
 }
 
 // Get users
-func (client *DynamoClient) getUsers() ([]User, error) {
+func (repo *UserRepositoryImpl) GetUsers() ([]User, error) {
 	var users []User
-	table := client.db.Table("user")
-	err := table.Scan().All(&users)
+	err := repo.client.db.Table("point").Get("kind", "user").All(&users)
 	if err != nil {
-		return nil, err
+		return []User{}, err
 	}
 	return users, nil
 }
 
-// Put user
-func (client *DynamoClient) putUser(user User) *dynamo.Put {
-	table := client.db.Table("user")
-	return table.Put(user)
+// Create	user
+func (repo *UserRepositoryImpl) CreateUser(id string) (User, error) {
+	user := User{
+		Kind:  "user",
+		Id:    id,
+		Point: 0,
+	}
+	err := repo.client.db.Table("point").Put(user).Run()
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
+}
+
+// Update user
+func (repo *UserRepositoryImpl) UpdateUser(user User) (User, error) {
+	err := repo.client.db.Table("point").Put(user).Run()
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
 }
