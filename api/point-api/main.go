@@ -25,6 +25,25 @@ func main() {
 			"message": os.Getenv("DYNAMO_ENDPOINT"),
 		})
 	})
+	// curl -X POST localhost:8080/content/test
+	r.POST("/content/:id", func(c *gin.Context) {
+		contentId := c.Param("id")
+		var content Content
+		content.Id = contentId
+		content.Kind = "content"
+		content.Point = 0
+		err := dbClient.createContent(content)
+		if err != nil {
+			log.Print(err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Created content",
+		})
+	})
 	// curl -X GET localhost:8080/contents
 	r.GET("/contents", func(c *gin.Context) {
 		contents, err := dbClient.getContents()
@@ -32,6 +51,17 @@ func main() {
 			log.Print(err)
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "Failed to get contents",
+			})
+		}
+		c.JSON(http.StatusOK, contents)
+	})
+	// curl -X GET localhost:8080/contents/sorted
+	r.GET("/contents/sorted", func(c *gin.Context) {
+		contents, err := dbClient.getContentsSorted()
+		if err != nil {
+			log.Print(err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.Error(),
 			})
 		}
 		c.JSON(http.StatusOK, contents)

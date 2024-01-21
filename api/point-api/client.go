@@ -1,12 +1,22 @@
 package main
 
 import (
+	"errors"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
 )
+
+type Mela struct {
+	Kind      string `dynamo:"kind,hash"`
+	ID        string `dynamo:"id,range"`
+	Point     int    `dynamo:"point" localIndex:"point-index,range"`
+	SpendBy   string `dynamo:"user_id"`
+	SpendTo   string `dynamo:"content_id"`
+	CreatedAt string `dynamo:"created_at" localIndex:"created_at-index,range"`
+}
 
 type DynamoClient struct {
 	Session *session.Session
@@ -70,11 +80,36 @@ func (client *DynamoClient) getContent(id string) (Content, error) {
 	return content, nil
 }
 
+// Create content
+func (client *DynamoClient) createContent(content Content) error {
+	table := client.db.Table("mela")
+	if err := table.Get("kind", "content").Range("id", dynamo.Equal, content.Id).One(&Mela{}); err == nil {
+		return errors.New("content already exists")
+	}
+	err := table.Put(content).Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Get contents
 func (client *DynamoClient) getContents() ([]Content, error) {
 	var contents []Content
-	table := client.db.Table("content")
-	err := table.Scan().All(&contents)
+	table := client.db.Table("mela")
+	err := table.Get("kind", "content").All(&contents)
+	if err != nil {
+		return nil, err
+	}
+	return contents, nil
+}
+
+// Get contents sorted
+func (client *DynamoClient) getContentsSorted() ([]Content, error) {
+	var contents []Content
+	table := client.db.Table("mela")
+	// get contents sorted by point with total-index
+	err := table.Get("kind", "content").Index("point-index").Order(dynamo.Descending).All(&contents)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package main
 
 type Content struct {
-	Id    string `dynamo:"id,hash"`
-	Total int    `dynamo:"total" index:"total-index,hash"`
+	Kind  string `dynamo:"kind,hash"`
+	Id    string `dynamo:"id,range"`
+	Point int    `dynamo:"point" localIndex:"point-index,range"`
 }
