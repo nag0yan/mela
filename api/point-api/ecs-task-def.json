@@ -27,7 +27,11 @@
       ],
       "environment": [
         {
-          "name": "DATABASE_ENDPOINT",
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "name": "DYNAMO_ENDPOINT",
           "value": "https://dynamodb.us-east-1.amazonaws.com"
         }
       ]
