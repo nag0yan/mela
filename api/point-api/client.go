@@ -8,12 +8,12 @@ import (
 	"github.com/guregu/dynamo"
 )
 
-type dynamoClient struct {
+type DynamoClient struct {
 	Session *session.Session
 	db      *dynamo.DB
 }
 
-func (client *dynamoClient) getDB() error {
+func (client *DynamoClient) getDB() error {
 	sess, err := session.NewSession()
 	if err != nil {
 		return err
@@ -32,7 +32,7 @@ func (client *dynamoClient) getDB() error {
 }
 
 // Get user
-func (client *dynamoClient) getUser(id string) (User, error) {
+func (client *DynamoClient) getUser(id string) (User, error) {
 	var user User
 	table := client.db.Table("user")
 	err := table.Get("id", id).One(&user)
@@ -43,7 +43,7 @@ func (client *dynamoClient) getUser(id string) (User, error) {
 }
 
 // Get users
-func (client *dynamoClient) getUsers() ([]User, error) {
+func (client *DynamoClient) getUsers() ([]User, error) {
 	var users []User
 	table := client.db.Table("user")
 	err := table.Scan().All(&users)
@@ -54,13 +54,13 @@ func (client *dynamoClient) getUsers() ([]User, error) {
 }
 
 // Put user
-func (client *dynamoClient) putUser(user User) *dynamo.Put {
+func (client *DynamoClient) putUser(user User) *dynamo.Put {
 	table := client.db.Table("user")
 	return table.Put(user)
 }
 
 // Get content
-func (client *dynamoClient) getContent(id string) (Content, error) {
+func (client *DynamoClient) getContent(id string) (Content, error) {
 	var content Content
 	table := client.db.Table("content")
 	err := table.Get("id", id).One(&content)
@@ -71,7 +71,7 @@ func (client *dynamoClient) getContent(id string) (Content, error) {
 }
 
 // Get contents
-func (client *dynamoClient) getContents() ([]Content, error) {
+func (client *DynamoClient) getContents() ([]Content, error) {
 	var contents []Content
 	table := client.db.Table("content")
 	err := table.Scan().All(&contents)
@@ -82,13 +82,13 @@ func (client *dynamoClient) getContents() ([]Content, error) {
 }
 
 // Put content
-func (client *dynamoClient) putContent(content Content) *dynamo.Put {
+func (client *DynamoClient) putContent(content Content) *dynamo.Put {
 	table := client.db.Table("content")
 	return table.Put(content)
 }
 
 // Get speinding
-func (client *dynamoClient) getSpending(content_id, user_id string) (Spending, error) {
+func (client *DynamoClient) getSpending(content_id, user_id string) (Spending, error) {
 	var spending Spending
 	table := client.db.Table("spending")
 	err := table.Get("content_id", content_id).Range("user_id", dynamo.Equal, user_id).One(&spending)
@@ -99,7 +99,7 @@ func (client *dynamoClient) getSpending(content_id, user_id string) (Spending, e
 }
 
 // Get spendings
-func (client *dynamoClient) getSpendings(content_id string) ([]Spending, error) {
+func (client *DynamoClient) getSpendings(content_id string) ([]Spending, error) {
 	var spendings []Spending
 	table := client.db.Table("spending")
 	err := table.Scan().Filter("content_id", dynamo.Equal, content_id).All(&spendings)
@@ -110,7 +110,7 @@ func (client *dynamoClient) getSpendings(content_id string) ([]Spending, error) 
 }
 
 // Put spending
-func (client *dynamoClient) putSpending(spending Spending) *dynamo.Put {
+func (client *DynamoClient) putSpending(spending Spending) *dynamo.Put {
 	table := client.db.Table("spending")
 	return table.Put(spending)
 }

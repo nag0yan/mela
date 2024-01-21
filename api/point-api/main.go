@@ -11,7 +11,7 @@ import (
 // Use struct tags much like the standard JSON library,
 // you can embed anonymous structs too!
 
-var dbClient dynamoClient
+var dbClient DynamoClient
 
 func main() {
 	err := dbClient.getDB()
@@ -25,8 +25,16 @@ func main() {
 			"message": os.Getenv("DYNAMO_ENDPOINT"),
 		})
 	})
-	// curl -X POST -H "Content-Type: application/json" -d '{"content_id":"test","point":100,"user_id":"user1"}' localhost:8080/spend
-	r.POST("/spend", func(c *gin.Context) {
+	// curl -X GET localhost:8080/contents
+	r.GET("/contents", func(c *gin.Context) {
+		contents, err := dbClient.getContents()
+		if err != nil {
+			log.Print(err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Failed to get contents",
+			})
+		}
+		c.JSON(http.StatusOK, contents)
 	})
 
 	// curl -X GET localhost:8080/user/user1
@@ -41,20 +49,14 @@ func main() {
 		}
 		c.JSON(http.StatusOK, user)
 	})
+
 	// curl -X GET localhost:8080/content/test/spendings
 	r.GET("/content/:id/spendings", func(c *gin.Context) {
 
 	})
-	// curl -X GET localhost:8080/contents
-	r.GET("/contents", func(c *gin.Context) {
-		contents, err := dbClient.getContents()
-		if err != nil {
-			log.Print(err)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "Failed to get contents",
-			})
-		}
-		c.JSON(http.StatusOK, contents)
+	// curl -X POST -H "Content-Type: application/json" -d '{"content_id":"test","point":100,"user_id":"user1"}' localhost:8080/spend
+	r.POST("/spend", func(c *gin.Context) {
 	})
+
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
